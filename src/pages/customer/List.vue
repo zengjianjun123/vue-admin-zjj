@@ -97,7 +97,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-         let url="http://localhost:6677/customer/deleteById?="+id;
+         let url="http://localhost:6677/customer/deleteById?id="+id;
         request.get(url).then((response)=>{
             this.loadData();
             this.$message({
@@ -105,8 +105,7 @@ export default {
             message:response.message
         });
         }) 
-      })
-      
+      })    
     },
     toUpdateHandler(row){
       this.form=row;

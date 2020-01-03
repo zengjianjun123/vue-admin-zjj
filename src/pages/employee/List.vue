@@ -123,7 +123,7 @@ methods:{
   },
 toAddHandler() {
      this.form={
-       type:"customeer"
+       type:"employee"
      }
       this.title="添加员工信息";
       this.Visible=true;
@@ -134,7 +134,6 @@ closeModalHandler(){
 }, 
 toUpdataHandler(row){
      this.form=row;
-     this.title="修改员工信息";
      this.Visible=true;
 },
 toDeleteHandler(id){
@@ -143,10 +142,14 @@ toDeleteHandler(id){
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
+           let url="http://localhost:6677/waiter/deleteById?id="+id;
+           request.get(url).then((response)=>{
+            this.loadData();
+            this.$message({
             type: 'success',
-            message: '删除成功!'
+            message:response.message
           });
+           })
         })
 }
     }
