@@ -10,20 +10,20 @@
     <el-table-column  prop="description" label=描述></el-table-column>
     <el-table-column prop="categoryId"  label=所属产品></el-table-column>
       <el-table-column label=操作>
-        <template v-sort="slot">
-      <a href="" @click.prevent="toDeleteHandler">删除</a>
-      <a href="" @click.prevent="toUpdataHandler">修改</a>
+        <template v-slot="slot">
+      <a href="" @click.prevent="toDeleteHandler(slot.row.id)">删除</a>
+      <a href="" @click.prevent="toUpdataHandler(slot.row)">修改</a>
         </template>
       </el-table-column>
   </el-table>
 
-   <div class="block">
+   <!-- <div class="block">
     <span class="demonstration"></span>
      <el-pagination
     layout="prev, pager, next"
     :total="1000">
      </el-pagination>
-   </div>
+   </div> -->
  <el-dialog
   :title="title"
   :visible.sync="Visible"
@@ -108,6 +108,9 @@ methods:{
      })
   },
 toAddHandler() {
+           this.form={
+       type:"product"
+     }
       this.title="添加员工信息";
       this.Visible=true;
       
@@ -116,6 +119,7 @@ closeModalHandler(){
     this.Visible=false;
 }, 
 toUpdataHandler(row){
+     this.form=row;
      this.title="修改员工信息";
      this.Visible=true;
 },
@@ -125,13 +129,17 @@ toDeleteHandler(id){
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
+         let url="http://localhost:6677/product/deleteById?id="+id;
+        request.get(url).then((response)=>{
+            this.loadData();
+            this.$message({
             type: 'success',
-            message: '删除成功!'
+            message:response.message
           });
         })
+})
 }
-    }
+}
 }
 </script>
 <style scoped>
