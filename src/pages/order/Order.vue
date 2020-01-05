@@ -10,8 +10,8 @@
     <el-tab-pane label="待服务" name="fifth">待服务</el-tab-pane>
     <el-tab-pane label="待确认" name="sixth">待确认</el-tab-pane>
     <el-tab-pane label="已完成" name="seventh">已完成</el-tab-pane>
-  </el-tabs>
-  <el-table :data="orders">
+    </el-tabs>
+  <el-table :data="orders.list">
    <el-table-column prop="id" label=订单编号></el-table-column>
     <el-table-column prop="orderTime" label=联系电话></el-table-column>
     <el-table-column prop="total" label=总价></el-table-column>
@@ -26,7 +26,13 @@
       </el-table-column>
   </el-table>
 
- <el-dialog
+ 
+  <el-pagination 
+        layout="prev, pager, next" 
+        :total="orders.total" 
+        @current-change="pageChageHandler">
+        </el-pagination>
+        <el-dialog
   :title="录入订单信息"
   :visible.sync="Visible"
   width="60%"
@@ -68,11 +74,15 @@ import querystring from 'querystring' //系统库
 export default {
    data(){
       return {
-        activeName: 'order',
+   activeName: 'order',
    Visible:false,         
-   orders:[],
+   orders:{},
    form:{
      type:"order"
+   },
+   params:{
+       page:0,
+       pageSize:10
    }
         }
     },
@@ -85,6 +95,12 @@ export default {
       this.loadData();
     },
 methods:{
+    pageChageHandler(page){
+        // 将params中当前页改为插件中的当前页
+        this.params.page = page-1;
+        // 加载
+        this.loadData();
+    },
   submitHandler(){
     //前端向后台发送请求，完成数据的保存操作
     let url="http://localhost:6677/order/save";
@@ -108,11 +124,21 @@ methods:{
   },
   loadData(){
    // this->vue实例 可以通过vue实例访问method 也可以是data属性
-    let url="http://localhost:6677/order/findAll"
-     request.get(url).then((response)=>{
-       //箭头函数中的this指向外部函数的this
+    let url="http://localhost:6677/order/queryPage"
+    //  request.get(url).then((response)=>{
+    //    //箭头函数中的this指向外部函数的this
+    //    this.orders=response.data;
+    //  })
+    request({
+        url,
+        method:"post",
+        headers:{
+             "Content-Type":"application/x-www-form-urlencoded"
+        },
+        data:querystring.stringify(this.params)
+    }).then((response)=>{
        this.orders=response.data;
-     })
+    })
   },
 toAddHandler() {
      this.form={

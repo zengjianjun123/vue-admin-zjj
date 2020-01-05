@@ -11,8 +11,10 @@
       <el-table-column prop="telephone" label="联系方式"></el-table-column>
       <el-table-column label="操作">
         <template v-slot="slot">
-          <a href="" @click.prevent="toDeleteHandler(slot.row.id)">删除</a>
-          <a href="" @click.prevent="toUpdateHandler(slot.row)">修改</a>
+          <!-- <a href="" @click.prevent="toDeleteHandler(slot.row.id)" icon="el-icon-delete">删除</a> -->
+          <!-- <a href="" @click.prevent="toUpdateHandler(slot.row)">修改</a> -->
+          <el-button  width="10px" @click.prevent="toDeleteHandler(slot.row.id)" type="primary" icon="el-icon-delete">删除</el-button>
+          <el-button type="primary" @click.prevent="toUpdateHandler(slot.row)" icon="el-icon-edit">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -77,7 +79,7 @@ export default {
         headers:{
           "Content-Type":"application/x-www-form-urlencoded"//协议声明
         },
-        data:querystring.stringify(this.form)
+        data:querystring.stringify(this.form)//参数表示将谁 以字符串的形式提交给后台
       }).then((response)=>{
         // 模态框关闭
         this.closeModalHandler();
